@@ -162,7 +162,7 @@ protected:
 				Node<T>* node = node_queue.front();
 				node_queue.pop();
 
-				out << node->data << " ";
+				out << node->getValue() << " ";
 
 				if (node->left) {
 					node_queue.push(node->left);
@@ -172,8 +172,6 @@ protected:
 					node_queue.push(node->right);
 				}
 			}
-
-			out << endl;
 		}
 	}
 
@@ -297,9 +295,9 @@ public:
 		if (this->_debug) {
 			cout << " [d] Copy constructor called. " << endl;
 		}
-		if (other._root) {
-			_root = new Node(*other._root);
-		}
+		
+		_root = cloneTree(other._root);
+
 		//cout << " TODO: Implement copy constructor. " << endl;
 	}
 
@@ -320,16 +318,10 @@ public:
 			cout << " [d] Copy assignment operator called. " << endl;
 		}
 
-		if (this == &other) {
-			return *this;
+		if (this != &other) {
+			makeEmpty();
+			_root = cloneTree(other._root);
 		}
-
-		makeEmptyHelper(_root);
-
-		if (other._root) {
-			_root = new Node(*other._root);
-		}
-
 		//cout << " TODO: Implement copy assignment operator. " << endl;
 		return *this;
 	}
