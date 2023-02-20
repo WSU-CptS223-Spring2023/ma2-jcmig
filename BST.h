@@ -148,12 +148,33 @@ protected:
 	/* Print tree out in level order */
 	/* MA TODO: Implement */
 	void printLevelOrderHelper(Node<T>* root, std::ostream& out) {
-		out << endl;
-		out << "printLevelOrderHelper UNIMPLEMENTED AT THIS TIME -- REPLACE!" << endl;
-		out << " ** Required to use the STL queue class (that's a huge hint)!" << endl;
-		out << " ** Doing this with a loop will be easier than recursion." << endl;
-		out << " ** Your code MUST print to 'out' not 'cout' to work - see printInOrder()." << endl;
+		if (!root) {
+			return;
+		}
 
+		std::queue<Node<T>*> node_queue;
+		node_queue.push(root);
+
+		while (!node_queue.empty()) {
+			int level_size = node_queue.size();
+
+			for (int i = 0; i < level_size; i++) {
+				Node<T>* node = node_queue.front();
+				node_queue.pop();
+
+				out << node->data << " ";
+
+				if (node->left) {
+					node_queue.push(node->left);
+				}
+
+				if (node->right) {
+					node_queue.push(node->right);
+				}
+			}
+
+			out << endl;
+		}
 	}
 
 	/* Return number of nodes in tree */
@@ -266,6 +287,8 @@ public:
 		if (this->_debug) {
 			cout << " TODO: Implement destructor to free *whole* tree. " << endl;
 		}
+		makeEmptyHelper(_root);
+
 	}
 
 	/* Copy constructor - perform a "deep" copy */
@@ -273,6 +296,9 @@ public:
 	BST(const BST& other) : _root(nullptr) {
 		if (this->_debug) {
 			cout << " [d] Copy constructor called. " << endl;
+		}
+		if (other._root) {
+			_root = new Node(*other._root);
 		}
 		//cout << " TODO: Implement copy constructor. " << endl;
 	}
@@ -283,6 +309,7 @@ public:
 		if (this->_debug) {
 			cout << " [d] Move constructor called " << endl;
 		}
+		std::swap(_root, other._root);
 		//cout << " TODO: Implement move constructor. " << endl;
 	}
 
@@ -292,6 +319,17 @@ public:
 		if (this->_debug) {
 			cout << " [d] Copy assignment operator called. " << endl;
 		}
+
+		if (this == &other) {
+			return *this;
+		}
+
+		makeEmptyHelper(_root);
+
+		if (other._root) {
+			_root = new Node(*other._root);
+		}
+
 		//cout << " TODO: Implement copy assignment operator. " << endl;
 		return *this;
 	}
@@ -302,6 +340,12 @@ public:
 		if (this->_debug) {
 			cout << " [d] Move assignment operator called. " << endl;
 		}
+
+		if (this != &other) {
+			makeEmptyHelper(this->_root);
+			std::swap(_root, other._root);
+		}
+
 		//cout << " TODO: Implement move assignment operator. " << endl;
 		return *this;
 	}
